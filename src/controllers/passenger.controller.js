@@ -1,13 +1,13 @@
-import { asyncHandler } from "../utils/AsyncHandler";
-import { APIError } from "../utils/APIerror";
-import { APIresponse } from "../utils/APIresponse";
-import { User } from "../models/user.model";
-import { Rides } from "../models/rides";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import { APIError } from "../utils/APIerror.js";
+import { APIresponse } from "../utils/APIresponse.js";
+import { User } from "../models/user.model.js";
+import { Rides } from "../models/rides.js";
 const select_location = asyncHandler(async (req, res) => {
   const { pickup_location, destination } = req.body;
   const passenger_id = req.user._id;
   if (!pickup_location || !destination) {
-    throw new APIError(402, "enter your current and destination location");
+    throw new APIError(402, "enter your pickup and destination location");
   }
   const drivers = await User.find({
     role: "driver",
@@ -29,6 +29,7 @@ const select_location = asyncHandler(async (req, res) => {
   io.to("drivers_room").emit("new_ride_offer", { //emit is used for alert(alert the drivers in th room that there is a new offer). its written with underscore for the frontend to connect(optional to use underscore)
     ride_id: new_request._id,
     passenger_id: new_request.passenger_id,
+    pickup_location: new_request.pickup_location,
     destination: new_request.destination,
     status: new_request.status,
   });
@@ -60,6 +61,12 @@ const accept_ride = asyncHandler(async (req,res) => {
       ride_details
     });
 
+    return res
+    .status(200)
+    .json(
+        new APIresponse(200,"you accepted the drivers offer")
+    )
+
 })
 const cancel_ride = asyncHandler(async (req,res) => {
     const { ride_id, driver_id } = req.body;
@@ -79,5 +86,9 @@ const cancel_ride = asyncHandler(async (req,res) => {
       ride_details,
     });
 
+    return res
+      .status(200)
+      .json(new APIresponse(200, "you cancelled the drivers offer"));
+
 })
-export { select_location };
+export { select_location, accept_ride, cancel_ride };

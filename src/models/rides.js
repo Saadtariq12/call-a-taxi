@@ -4,7 +4,7 @@ const rides_schema = new mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: "User",
         },
-        pickup_loction: String,
+        pickup_location: String,
         destination: String,
         status:{
           type:String,

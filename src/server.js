@@ -23,10 +23,10 @@ io.on("connection", (socket) => {
 
   // --- STRATEGY FOR ONGOING RIDES ---
   // Once a driver accepts a specific ride, both passenger and driver join this private room
-  socket.on("join_ride_room", (data) => {
-    const { ride_id } = data;
-    socket.join(ride_id);
-    console.log(`Socket ${socket.id} joined private ride room: ${ride_id}`); // Fixed typo: rideId to ride_id
+  socket.on("join_rivate_room", (data) => {
+    const { user_ride_id } = data;
+    socket.join(user_ride_id);
+    console.log(`Socket ${socket.id} joined private ride room: ${user_ride_id}`); 
   });
 
   socket.on("disconnect", () => {

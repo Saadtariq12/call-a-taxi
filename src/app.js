@@ -16,6 +16,10 @@ app.use(cookieParser());
 
 //routes import
 import userRouter from "./routes/user.routes.js";
+import passengerRouter from "./routes/passenger.routes.js"
+import driverRouter from "./routes/driver.routes.js"
 //routes declaration
 app.use("/api/v1/users", userRouter); // when /api/v1/users, pass onto userRouter(its path is defined)
+app.use("/api/v1/passenger", passengerRouter); //passenger endpoints
+app.use("/api/v1/driver", driverRouter); //driver endpoints
 export { app };

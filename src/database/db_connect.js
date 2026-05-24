@@ -4,7 +4,7 @@ const db_connect = async () => {
   try {
     await mongoose.connect(`${process.env.mongo_url}/${db_name}`);
     console.log(`mongoDb connected...port number: ${mongoose.connection.host}`);
-  } catch {
+  } catch (error) {
     console.log(process.env.mongo_url);
     console.log("error: ", error);
     process.exit(1);

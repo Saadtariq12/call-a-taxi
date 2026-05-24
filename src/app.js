@@ -4,10 +4,13 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
+const corsOrigin =
+  process.env.CORS_ORIGIN || process.env.CORS_ || "http://localhost:5173";
+
 app.use(
   cors({
-    origin: process.env.CORS_, // reads http://localhost:5173 from .env
-    credentials: true, // REQUIRED for cookies/auth headers
+    origin: corsOrigin,
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
@@ -27,4 +30,8 @@ import driverRouter from "./routes/driver.routes.js"
 app.use("/api/v1/users", userRouter); // when /api/v1/users, pass onto userRouter(its path is defined)
 app.use("/api/v1/passenger", passengerRouter); //passenger endpoints
 app.use("/api/v1/driver", driverRouter); //driver endpoints
+
+import { errorHandler } from "./middlewares/error.middleware.js";
+app.use(errorHandler);
+
 export { app };

@@ -31,9 +31,13 @@ const registerUser = asyncHandler(async (req, res) => {
       "Failed to create user due to some internal error, try again",
     );
   }
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken",
+  );
+
   return res
     .status(201)
-    .json(new APIresponse(201, "User registered successfully", user));
+    .json(new APIresponse(201, "User registered successfully", createdUser));
 });
 const login = asyncHandler(async (req, res) => {
   const { email, password, username } = req.body;

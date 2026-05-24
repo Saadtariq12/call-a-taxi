@@ -6,6 +6,14 @@ const rides_schema = new mongoose.Schema({
         },
         pickup_location: String,
         destination: String,
+        pickup_coords: {
+          lat: Number,
+          lng: Number,
+        },
+        destination_coords: {
+          lat: Number,
+          lng: Number,
+        },
         status:{
           type:String,
           enum:["pending","accepted","cancelled"],
@@ -14,6 +22,7 @@ const rides_schema = new mongoose.Schema({
   offers: [
     {
       driverId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      driver_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       driverName: { type: String },
       fare: { type: Number },
     },

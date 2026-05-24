@@ -5,10 +5,13 @@ import { createServer } from "http";
 
 const http = createServer(app); // This is your HTTP server wrapping Express
 
+const socketCorsOrigin =
+  process.env.CORS_ORIGIN || process.env.CORS_ || "http://localhost:5173";
+
 const io = new Server(http, {
   cors: {
-    origin: "http://localhost:5173", // ✅ all three properties now INSIDE cors
-    methods: ["GET", "POST", "PATCH"],
+    origin: socketCorsOrigin,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   },
 });
@@ -36,6 +39,10 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
+  if (socket.user?._id) {
+    socket.join(String(socket.user._id));
+    console.log(`Socket ${socket.id} joined personal room: ${socket.user._id}`);
+  }
 
   // --- STRATEGY FOR DRIVERS ---
   // When a driver logs into their app, their frontend will send an event to join this room.
@@ -48,9 +55,10 @@ io.on("connection", (socket) => {
   // --- STRATEGY FOR ONGOING RIDES ---
   // Once a driver accepts a specific ride, both passenger and driver join this private room
   socket.on("join_private_room", (data) => {
-    const { user_ride_id } = data;
-    socket.join(user_ride_id);
-    console.log(`Socket ${socket.id} joined private ride room: ${user_ride_id}`);
+    const rideId = data?.user_ride_id || data?.ride_id;
+    if (!rideId) return;
+    socket.join(String(rideId));
+    console.log(`Socket ${socket.id} joined private ride room: ${rideId}`);
   });
 
   socket.on("disconnect", () => {

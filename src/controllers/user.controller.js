@@ -68,10 +68,16 @@ const identify_user = asyncHandler(async (req,res) => {
     const user = await User.findById(req.user._id);
     user.role = role;
     await user.save();
+    const { accessToken, refreshToken } = await AccessAndRefreshTokens(
+      user._id,
+    );
     return res
     .status(200)
     .json(
-        new APIresponse(200,`you are now registered as: ${role} `)
+        new APIresponse(200,`you are now registered as: ${role} `,{
+            accessToken,
+            refreshToken,
+        })
     )
 })
 export{
